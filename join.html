@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Join Quiz | QuizQuest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="box">
+        <h2>Join Quiz Session</h2>
+        <form id="joinForm">
+            <input type="text" id="quizCode" placeholder="Enter Quiz Code" required>
+            <button type="submit">Join Quiz</button>
+        </form>
+    </div>
+
+    <script src="/js/firebase-config.js"></script>
+    <script>
+        document.getElementById('joinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('quizCode').value.toUpperCase();
+
+            const snapshot = await db.collection('quizzes')
+                .where('code', '==', code)
+                .get();
+
+            if (snapshot.empty) {
+                alert('Invalid quiz code!');
+                return;
+            }
+
+            const quizId = snapshot.docs[0].id;
+            window.location.href = `/quiz-session.html?id=${quizId}`;
+        });
+    </script>
+</body>
+</html>
